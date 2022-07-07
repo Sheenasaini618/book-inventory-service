@@ -1,0 +1,197 @@
+{
+	"info": {
+		"_postman_id": "552a3c12-6c05-4ebb-89ba-5796c5a82620",
+		"name": "book collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "retrieving the list of all the books",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/api/v1/books/list"
+			},
+			"response": []
+		},
+		{
+			"name": "retrieving book on the basis of book title",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/api/v1/books/search/title/probability"
+			},
+			"response": []
+		},
+		{
+			"name": "retrieving book on the basis of book author",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/api/v1/books/search/author/Robert"
+			},
+			"response": []
+		},
+		{
+			"name": "adding the boook",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"statistics\",\n    \"imageLinks\": {\n        \"smallThumbnail\": \"http://books.google.com/books/content?id=3yq_oQEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api\",\n        \"thumbnail\": \"http://books.google.com/books/content?id=3yq_oQEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api\"\n    },\n    \"authors\": [\n        \"Robert\",\n        \"Michael\",\n        \"abcd\"\n    ],\n    \"description\": \"mathematics\",\n    \"price\": 1000,\n    \"quantity\": 5\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/api/v1/books/create"
+			},
+			"response": []
+		},
+		{
+			"name": "updating the book name",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"62c596cfcb4ba733da1dedb2\",\n    \"title\": \"algebra\",\n    \"imageLinks\": {\n        \"smallThumbnail\": \"http://books.google.com/books/content?id=3yq_oQEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api\",\n        \"thumbnail\": \"http://books.google.com/books/content?id=3yq_oQEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api\"\n    },\n    \"authors\": [\n        \"Robert\",\n        \"Michael\",\n        \"abcd\"\n    ],\n    \"description\": \"mathematics\",\n    \"price\": 1000,\n    \"quantity\": 8\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/api/v1/books/update/1"
+			},
+			"response": []
+		},
+		{
+			"name": "deleting all books from repo",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/api/v1/books/deleteAll"
+			},
+			"response": []
+		},
+		{
+			"name": "deleting book",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "authority",
+						"value": "mountebank-ui-sit.dev.maximus.axisb.com"
+					},
+					{
+						"key": "pragma",
+						"value": "no-cache"
+					},
+					{
+						"key": "cache-control",
+						"value": "no-cache"
+					},
+					{
+						"key": "accept",
+						"value": "application/json, text/plain, */*"
+					},
+					{
+						"key": "user-agent",
+						"value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36"
+					},
+					{
+						"key": "content-type",
+						"value": "application/json"
+					},
+					{
+						"key": "origin",
+						"value": "https://mountebank-ui-sit.dev.maximus.axisb.com"
+					},
+					{
+						"key": "sec-fetch-site",
+						"value": "same-origin"
+					},
+					{
+						"key": "sec-fetch-mode",
+						"value": "cors"
+					},
+					{
+						"key": "sec-fetch-dest",
+						"value": "empty"
+					},
+					{
+						"key": "referer",
+						"value": "https://mountebank-ui-sit.dev.maximus.axisb.com/config/credit-card"
+					},
+					{
+						"key": "accept-language",
+						"value": "en-GB,en-US;q=0.9,en;q=0.8"
+					},
+					{
+						"key": "cookie",
+						"value": "sid=aa831956-2ae7-11ea-be2b-447aeae3eba9; _ga_CH41PE7401=GS1.1.1580356695.3.0.1580356695.0; _ga=GA1.2.1265355481.1577542835"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "http://localhost:8080/api/v1/books/delete/62c596cfcb4ba733da1dedb2"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Books through google Book Api",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/api/v1/books/list/probability"
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieving Audit",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/api/v1/books/audit"
+			},
+			"response": []
+		}
+	]
+}
