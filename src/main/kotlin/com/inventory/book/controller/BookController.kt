@@ -35,7 +35,7 @@ class BookController(@Autowired val bookService : BookService) {
     }
 
     @PostMapping("/books/create")
-    fun createBook(@RequestBody book: Book){
+    fun createBook(@RequestBody book: Book) : Mono<Book> {
         return bookService.createBooks(book)
     }
 
@@ -45,8 +45,8 @@ class BookController(@Autowired val bookService : BookService) {
     }
 
     @DeleteMapping("/books/delete/{id}")
-    fun deleteBookById(@PathVariable id : String) : Mono<Void>{
-        return bookService.deleteBooksById(id)
+    fun deleteBookById(@PathVariable id : String): Mono<Book> {
+         return bookService.deleteBooksById(id)
     }
 
     @DeleteMapping("books/deleteAll")

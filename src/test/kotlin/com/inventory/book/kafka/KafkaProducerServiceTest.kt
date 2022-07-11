@@ -80,9 +80,9 @@ class KafkaProducerServiceTest {
 
         val book = Book("1","probability" , Image("https://image.png","https://image.png") , listOf("Michael"), "abcd" , 2,4)
 
-        kafkaProducerService.messageWhenBookIsAdded(book)
+        kafkaProducerService.messageOnBasisAction(book,"ADDED")
 
-        Thread.sleep(10000)
+        Thread.sleep(20000)
         val audit= KafkaConsumerService.audit.last()
         Assertions.assertTrue(audit.contains("4 number of book of probability having price 2 has been added"))
     }
@@ -92,9 +92,9 @@ class KafkaProducerServiceTest {
 
         val book = Book("1","probability" , Image("https://image.png","https://image.png") , listOf("Michael"), "abcd" , 2,4)
 
-        kafkaProducerService.messageWhenBookIsUpdated(book)
+        kafkaProducerService.messageOnBasisAction(book,"UPDATED")
 
-        Thread.sleep(10000)
+        Thread.sleep(20000)
         val audit= KafkaConsumerService.audit.last()
         Assertions.assertTrue(audit.contains("4 number of book of probability having price 2 has been updated"))
     }
@@ -104,9 +104,9 @@ class KafkaProducerServiceTest {
 
         val book = Book("1","probability" , Image("https://image.png","https://image.png") , listOf("Michael"), "abcd" , 2,4)
 
-        kafkaProducerService.messageWhenBookIsDeleted(book)
+        kafkaProducerService.messageOnBasisAction(book,"DELETED")
 
-        Thread.sleep(10000)
+        Thread.sleep(20000)
         val audit= KafkaConsumerService.audit.last()
         Assertions.assertTrue(audit.contains("4 number of book of probability having price 2 has been deleted"))
     }

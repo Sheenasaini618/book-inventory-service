@@ -72,36 +72,36 @@ class BookControllerTest {
         }
     }
 
-//    @Test
-//    fun `should create book when create api is being called`() {
-//
-//        val exepectedResponse = mapOf("id" to "1",
-//            "title" to "probability",
-//            "imageLinks" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
-//            "authors" to listOf("Michael"),
-//            "description" to "abcd",
-//            "price" to 2,
-//            "quantity" to 4)
-//
-//        val book = Book("1","probability" , Image("https://image.png","https://image.png") , listOf("Michael"), "abcd" , 2,4)
-//
-//        every {
-//            bookService.createBooks(book)
-//        } returns Mono.just(book)
-//
-//        val response = client.post()
-//            .uri("/api/v1/books/create")
-//            .bodyValue(book)
-//            .exchange()
-//            .expectStatus().is2xxSuccessful
-//            .returnResult<Any>().responseBody
-//
-//        response.blockFirst() shouldBe exepectedResponse
-//
-//        verify(exactly = 1) {
-//            bookService.createBooks(book)
-//        }
-//    }
+    @Test
+    fun `should create book when create api is being called`() {
+
+        val exepectedResponse = mapOf("id" to "1",
+            "title" to "probability",
+            "imageLinks" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
+            "authors" to listOf("Michael"),
+            "description" to "abcd",
+            "price" to 2,
+            "quantity" to 4)
+
+        val book = Book("1","probability" , Image("https://image.png","https://image.png") , listOf("Michael"), "abcd" , 2,4)
+
+        every {
+            bookService.createBooks(book)
+        } returns Mono.just(book)
+
+        val response = client.post()
+            .uri("/api/v1/books/create")
+            .bodyValue(book)
+            .exchange()
+            .expectStatus().is2xxSuccessful
+            .returnResult<Any>().responseBody
+
+        response.blockFirst() shouldBe exepectedResponse
+
+        verify(exactly = 1) {
+            bookService.createBooks(book)
+        }
+    }
 
     @Test
     fun `should return book on the basis of the book title`() {

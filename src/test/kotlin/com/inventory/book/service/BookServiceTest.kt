@@ -9,6 +9,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
 
@@ -25,10 +26,6 @@ class BookServiceTest{
         every {
             findAll()
         } returns Flux.just(book1,book2)
-//
-//        every {
-//            save(book1)
-//        }  returns Mono.just(book1)
 
         every {
             findByTitle("probability")
@@ -63,14 +60,6 @@ class BookServiceTest{
         StepVerifier.create( bookService.findAll()).expectSubscription().expectNext(book1).expectNext(book2).verifyComplete()
         StepVerifier.create( bookService.findAll()).expectNextCount(2).verifyComplete()
     }
-//
-//    @Test
-//    fun `should create a book when create method is called`() {
-//
-//        val result = bookService.createBooks(book1)
-//
-//        result shouldBe book1
-//    }
 
     @Test
     fun `should find the list of books on the basis of the title`() {

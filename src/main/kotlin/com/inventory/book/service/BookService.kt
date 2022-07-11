@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.util.UriComponentsBuilder
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.toMono
 
 @Service
 class BookService(@Autowired val bookRepository : BookRepository , @Autowired val kafkaProducerService : KafkaProducerService) {
@@ -18,25 +19,28 @@ class BookService(@Autowired val bookRepository : BookRepository , @Autowired va
     fun findAll() : Flux<Book> =
         bookRepository.findAll()
 
-    fun createBooks(book: Book){
-       bookRepository.save(book).subscribe(kafkaProducerService::messageWhenBookIsAdded)
+    fun createBooks(book: Book): Mono<Book>{
+       return bookRepository.save(book).doOnSuccess { it->kafkaProducerService.messageOnBasisAction(it, Action.ADDED.name) }
     }
 
-    fun deleteBooksById(id : String): Mono<Void>{
-        bookRepository.findById(id).subscribe(kafkaProducerService::messageWhenBookIsDeleted)
-        return bookRepository.deleteById(id)
+    fun deleteBooksById(id : String) : Mono<Book>{
+         return bookRepository.findById(id).flatMap { book ->
+             println(book)
+             bookRepository.deleteById(id)
+             .doOnSuccess{kafkaProducerService.messageOnBasisAction(book,Action.DELETED.name)}.subscribe()
+             book.toMono()
+         }
     }
 
     fun updateBookById(id: String, book: Book) : Mono<Book> {
 
-       var bookResult = bookRepository.findById(id)
+       return bookRepository.findById(id)
            .flatMap {
                it.price = book.price
                it.quantity = book.quantity
                bookRepository.save(it)
+               .doOnSuccess{kafkaProducerService.messageOnBasisAction(it,Action.UPDATED.name)}
            }
-        bookResult.subscribe(kafkaProducerService::messageWhenBookIsUpdated)
-        return bookResult
     }
 
     fun findByTitle(title : String) : Flux<Book>{
@@ -65,4 +69,10 @@ class BookService(@Autowired val bookRepository : BookRepository , @Autowired va
             .replaceQueryParam("key","AIzaSyBEz4HtafYUQVctBqG2PbgI7GzXwr4e1Yc")
             .encode().toUriString()
     }
+}
+
+enum class Action{
+    ADDED,
+    UPDATED,
+    DELETED
 }
