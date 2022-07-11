@@ -2,34 +2,27 @@ package com.inventory.book.kafka
 
 import com.example.demo.book.Book
 import com.example.demo.book.Image
+import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.junit.After
 import org.junit.Before
+import org.junit.ClassRule
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.kafka.annotation.EnableKafka
-import org.springframework.kafka.test.context.EmbeddedKafka
-import org.springframework.test.annotation.DirtiesContext
-import org.springframework.kafka.test.utils.ContainerTestUtils
-import org.springframework.test.context.junit4.SpringRunner
-import java.lang.Exception
-import org.apache.kafka.clients.consumer.ConsumerRecord
-import org.junit.After
-import org.junit.ClassRule
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.listener.ContainerProperties
-
-import java.util.concurrent.BlockingQueue
-
 import org.springframework.kafka.listener.KafkaMessageListenerContainer
 import org.springframework.kafka.listener.MessageListener
 import org.springframework.kafka.test.rule.EmbeddedKafkaRule
+import org.springframework.kafka.test.utils.ContainerTestUtils
 import org.springframework.kafka.test.utils.KafkaTestUtils
+import org.springframework.test.annotation.DirtiesContext
+import org.springframework.test.context.junit4.SpringRunner
+import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
-import java.util.concurrent.TimeUnit
 
 @RunWith(SpringRunner::class)
 @DirtiesContext
