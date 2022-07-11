@@ -1,4 +1,4 @@
-package com.example.demo
+package com.inventory
 
 
 import org.springframework.boot.autoconfigure.SpringBootApplication

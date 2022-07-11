@@ -1,6 +1,10 @@
-package com.example.demo.book
+package com.inventory.book.controller
 
-import arrow.core.extensions.id.applicative.map
+import com.example.demo.book.Book
+import com.example.demo.book.GooleBook
+import com.example.demo.book.Image
+import com.example.demo.book.Item
+import com.inventory.book.service.BookService
 import io.kotlintest.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -21,8 +25,6 @@ import reactor.core.publisher.Mono
 @AutoConfigureWebTestClient
 class BookControllerTest {
 
-    //  We can use WebTestClient to create a client to retrieve data from the endpoints provided by the BookController
-
     @Autowired
     lateinit var client : WebTestClient
 
@@ -33,19 +35,19 @@ class BookControllerTest {
     fun `should return list of all the books and to verify that book service is internally called once`() {
 
         val book1 = Book("1","probability" , Image("https://image.png","https://image.png") , listOf("Michael"), "abcd" , 2,4)
-        val book2 = Book("2","complex Algebra" , Image("https://image.png","https://image.png"), listOf("Robert") , "abcd" , 100 , 3)
+        val book2 = Book("2","complex Algebra" , Image("https://image.png","https://image.png") , listOf("Robert") , "abcd" , 100 , 3)
 
         val expectedResult = listOf(
             mapOf("id" to "1",
                 "title" to "probability",
-                "image" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
+                "imageLinks" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
                 "authors" to listOf("Michael"),
                 "description" to "abcd",
                 "price" to 2,
                 "quantity" to 4),
             mapOf("id" to "2",
                 "title" to "complex Algebra",
-                "image" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
+                "imageLinks" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
                 "authors" to listOf("Robert"),
                 "description" to "abcd",
                 "price" to 100,
@@ -77,7 +79,7 @@ class BookControllerTest {
 //
 //        val exepectedResponse = mapOf("id" to "1",
 //            "title" to "probability",
-//            "image" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
+//            "imageLinks" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
 //            "authors" to listOf("Michael"),
 //            "description" to "abcd",
 //            "price" to 2,
@@ -108,7 +110,7 @@ class BookControllerTest {
 
         val exepectedResponse = mapOf("id" to "1",
             "title" to "probability",
-            "image" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
+            "imageLinks" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
             "authors" to listOf("Michael"),
             "description" to "abcd",
             "price" to 2,
@@ -140,7 +142,7 @@ class BookControllerTest {
         val expectedResult = listOf(
             mapOf("id" to "1",
                 "title" to "probability",
-                "image" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
+                "imageLinks" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
                 "authors" to listOf("Michael"),
                 "description" to "abcd",
                 "price" to 2,
@@ -169,35 +171,35 @@ class BookControllerTest {
         }
     }
 
-//    @Test
-//    fun `should be able to update the book present in the online book store`() {
-//
-//        val expectedResult = listOf(
-//            mapOf("id" to "1",
-//                "title" to "probability",
-//                "image" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
-//                "authors" to listOf("Michael"),
-//                "description" to "abcd",
-//                "price" to 2,
-//                "quantity" to 4)
-//        )
-//
-//        val book1 = Book("1","probability" , Image("https://image.png","https://image.png") , listOf("Michael"), "abcd" , 2,4)
-//
-//        every {
-//            bookService.updatingBook("1",book1)
-//        } returns
-//
-//        val response = client.put()
-//            .uri("/api/v1/books/update/1")
-//            .bodyValue(book1)
-//            .exchange()
-//            .expectStatus().is2xxSuccessful
-//
-//        verify(exactly = 1) {
-//            bookService.updatingBook("1",book1)
-//        }
-//    }
+    @Test
+    fun `should be able to update the book present in the online book store`() {
+
+        val expectedResult = listOf(
+            mapOf("id" to "1",
+                "title" to "probability",
+                "imageLinks" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
+                "authors" to listOf("Michael"),
+                "description" to "abcd",
+                "price" to 2,
+                "quantity" to 4)
+        )
+
+        val book1 = Book("1","probability" , Image("https://image.png","https://image.png") , listOf("Michael"), "abcd" , 2,4)
+
+        every {
+            bookService.updateBookById("1",book1)
+        } returns Mono.just(book1)
+
+        val response = client.put()
+            .uri("/api/v1/books/update/1")
+            .bodyValue(book1)
+            .exchange()
+            .expectStatus().is2xxSuccessful
+
+        verify(exactly = 1) {
+            bookService.updateBookById("1",book1)
+        }
+    }
 
     @TestConfiguration
     class ControllerTestConfig {

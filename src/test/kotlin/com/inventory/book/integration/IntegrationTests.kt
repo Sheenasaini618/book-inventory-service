@@ -1,15 +1,20 @@
-package com.example.demo.book
+package com.inventory.book.integration
 
+import com.example.demo.book.Book
+import com.example.demo.book.GooleBook
+import com.example.demo.book.Image
+import com.inventory.book.repository.BookRepository
 import io.kotlintest.shouldBe
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.expectBodyList
 import org.springframework.test.web.reactive.server.returnResult
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -27,7 +32,7 @@ class IntegrationTests {
 
     @BeforeEach
     fun setUp() {
-        bookRepository.deleteAll()
+        bookRepository.deleteAll().subscribe()
     }
 
     @Test
@@ -35,7 +40,7 @@ class IntegrationTests {
 
         val exepectedResponse = mapOf("id" to "1",
             "title" to "probability",
-            "image" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
+            "imageLinks" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
             "authors" to listOf("Michael"),
             "description" to "abcd",
             "price" to 2,
@@ -43,7 +48,7 @@ class IntegrationTests {
 
         val book = Book("1","probability" , Image("https://image.png","https://image.png") , listOf("Michael"), "abcd" , 2,4)
 
-        bookRepository.insert(book).block()
+        bookRepository.save(book).block()
 
         val response = client.get()
             .uri("/api/v1/books/list")
@@ -60,7 +65,7 @@ class IntegrationTests {
 
         val exepectedResponse = mapOf("id" to "1",
             "title" to "probability",
-            "image" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
+            "imageLinks" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
             "authors" to listOf("Michael"),
             "description" to "abcd",
             "price" to 2,
@@ -68,7 +73,7 @@ class IntegrationTests {
 
         val book = Book("1","probability" , Image("https://image.png","https://image.png") , listOf("Michael"), "abcd" , 2,4)
 
-        bookRepository.insert(book).block()
+        bookRepository.save(book).block()
 
         val response = client.get()
             .uri("/api/v1/books/search/title/${book.title}")
@@ -85,7 +90,7 @@ class IntegrationTests {
 
         val exepectedResponse = mapOf("id" to "1",
             "title" to "probability",
-            "image" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
+            "imageLinks" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
             "authors" to listOf("Michael"),
             "description" to "abcd",
             "price" to 2,
@@ -93,10 +98,10 @@ class IntegrationTests {
 
         val book = Book("1","probability" , Image("https://image.png","https://image.png") , listOf("Michael"), "abcd" , 2,4)
 
-        bookRepository.insert(book).block()
+        bookRepository.save(book).block()
 
         val response = client.get()
-            .uri("/api/v1/books/search/author/${book.authors}")
+            .uri("/api/v1/books/search/author/${book.authors?.get(0)}")
             .exchange()
             .expectStatus().is2xxSuccessful
             .returnResult<Any>()
@@ -106,12 +111,12 @@ class IntegrationTests {
     }
 
     @Test
-    fun `should create book in the database on the basis`() {
+    fun `should create book in the db and receive audit of addition of book`() {
 
 
         val exepectedResponse = mapOf("id" to "1",
             "title" to "probability",
-            "image" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
+            "imageLinks" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
             "authors" to listOf("Michael"),
             "description" to "abcd",
             "price" to 2,
@@ -119,23 +124,30 @@ class IntegrationTests {
 
         val book = Book("1","probability" , Image("https://image.png","https://image.png") , listOf("Michael"), "abcd" , 2,4)
 
-        val response = client.post()
+        client.post()
             .uri("/api/v1/books/create")
             .bodyValue(book)
             .exchange()
             .expectStatus().is2xxSuccessful
-            .returnResult<Any>()
-            .responseBody.blockFirst()
 
-        response shouldBe exepectedResponse
+
+         client.get()
+            .uri("/api/v1/books/audit")
+            .exchange()
+            .expectStatus().isOk
+            .expectBodyList(String::class.java)
+            .consumeWith<WebTestClient.ListBodySpec<String>>{
+                list -> Assertions.assertEquals(1,list.responseBody?.size)
+            }
+
     }
 
     @Test
-    fun `should be able to update the book present in the online book store`() {
+    fun `should be able to update the book present in the online book store and receive audit of updation of book`() {
 
         val exepectedResponse = mapOf("id" to "1",
             "title" to "probability",
-            "image" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
+            "imageLinks" to mapOf("smallThumbnail" to "https://image.png","thumbnail" to "https://image.png"),
             "authors" to listOf("Michael"),
             "description" to "abcd",
             "price" to 2,
@@ -145,7 +157,7 @@ class IntegrationTests {
         val book2 = Book("1","probability" , Image("https://image.png","https://image.png") , listOf("Michael"), "abcd" , 2,6)
 
 
-        bookRepository.insert(book1)
+        bookRepository.save(book1).block()
 
         val response = client.put()
             .uri("/api/v1/books/update/${book1.id}")
@@ -156,5 +168,27 @@ class IntegrationTests {
             .responseBody.blockFirst()
 
         response shouldBe exepectedResponse
+
+        client.get()
+            .uri("/api/v1/books/audit")
+            .exchange()
+            .expectStatus().isOk
+            .expectBodyList(String::class.java)
+            .consumeWith<WebTestClient.ListBodySpec<String>>{
+                    list -> Assertions.assertEquals(1,list.responseBody?.size)
+            }
+    }
+
+    @Test
+    fun `should return 200 successful when book from the google book api is being searched`(){
+
+          client.get()
+            .uri("/api/v1/books/google/list/probability")
+            .exchange()
+            .expectStatus().is2xxSuccessful
+              .expectBodyList(GooleBook::class.java)
+              .consumeWith<WebTestClient.ListBodySpec<GooleBook>> {
+                  list -> Assertions.assertEquals(1,list.responseBody?.size)
+              }
     }
 }

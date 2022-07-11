@@ -1,9 +1,11 @@
-package com.example.demo.book
+package com.inventory.book.controller
 
+import com.example.demo.book.Book
+import com.inventory.book.service.BookService
+import com.example.demo.book.GooleBook
+import com.inventory.book.kafka.KafkaConsumerService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.util.UriComponentsBuilder
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -13,18 +15,13 @@ import reactor.core.publisher.Mono
 @RestController
 @RequestMapping("/api/v1")
 @CrossOrigin
-class BookController(private val bookService : BookService) {
+class BookController(@Autowired val bookService : BookService) {
 
     // endpoint in our controller that publishes multiple Book.kt resource
 
     @GetMapping("/books/list")
     fun getAllBooks(): Flux<Book> {
         return bookService.findAll()
-    }
-
-    @GetMapping("/books/list/{query}")
-    fun getAllBooksUsingGoogleBookApi(@PathVariable query : String): Flux<GooleBook> {
-        return bookService.getBookfromApi(query)
     }
 
     @GetMapping("books/search/title/{title}")
@@ -43,18 +40,23 @@ class BookController(private val bookService : BookService) {
     }
 
     @PutMapping("/books/update/{id}")
-    fun updateBook(@PathVariable id : String, @RequestBody book : Book): Mono<Book>{
-        return bookService.updatingBook(id, book)
+    fun updateBookById(@PathVariable id : String, @RequestBody book : Book): Mono<Book>{
+        return bookService.updateBookById(id, book)
     }
 
     @DeleteMapping("/books/delete/{id}")
-    fun deleteBooksOfParticularId(@PathVariable id : String) : Mono<Void>{
-        return bookService.deleteBooksOfParticularId(id)
+    fun deleteBookById(@PathVariable id : String) : Mono<Void>{
+        return bookService.deleteBooksById(id)
     }
 
     @DeleteMapping("books/deleteAll")
     fun deleteAllBooks(): Mono<Void> {
         return bookService.remove()
+    }
+
+    @GetMapping("/books/google/list/{title}")
+    fun getAllBooksUsingGoogleBookApi(@PathVariable title : String): Flux<GooleBook> {
+        return bookService.getBookfromApi(title)
     }
 
     @GetMapping("/books/audit")

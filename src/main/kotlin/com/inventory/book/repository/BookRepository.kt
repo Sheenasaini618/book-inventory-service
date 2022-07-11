@@ -1,10 +1,9 @@
-package com.example.demo.book
+package com.inventory.book.repository
 
-import org.springframework.data.mongodb.repository.Query
+import com.example.demo.book.Book
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
 
 @Repository
 interface BookRepository : ReactiveMongoRepository<Book , String> {

@@ -1,11 +1,14 @@
-package com.example.demo.book
+package com.inventory.book.service
 
+import com.example.demo.book.Book
+import com.example.demo.book.Image
+import com.inventory.book.kafka.KafkaProducerService
+import com.inventory.book.repository.BookRepository
 import io.kotlintest.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
 
@@ -14,7 +17,7 @@ class BookServiceTest{
     // mocking the repository layer response
 
     val book1 = Book("1","probability" , Image("https://image.png","https://image.png") , listOf("Michael"), "abcd" , 2,4)
-    val book2 = Book("2","complex Algebra" , Image("https://image.png","https://image.png"), listOf("Robert") , "abcd" , 100 , 3)
+    val book2 = Book("2","complex Algebra" , Image("https://image.png","https://image.png") , listOf("Robert") , "abcd" , 100 , 3)
 
 
     private val bookRepository = mockk<BookRepository>(){
@@ -22,10 +25,10 @@ class BookServiceTest{
         every {
             findAll()
         } returns Flux.just(book1,book2)
-
-        every {
-            insert(book1)
-        }  returns Mono.just(book1)
+//
+//        every {
+//            save(book1)
+//        }  returns Mono.just(book1)
 
         every {
             findByTitle("probability")
@@ -34,9 +37,12 @@ class BookServiceTest{
         every {
             findByAuthors("Michael")
         } returns Flux.just(book1)
+
     }
 
-    private val bookService = BookService(bookRepository)
+    private val kafkaProducerService = mockk<KafkaProducerService>()
+
+    private val bookService = BookService(bookRepository,kafkaProducerService)
 
 
     @Test
@@ -57,7 +63,7 @@ class BookServiceTest{
         StepVerifier.create( bookService.findAll()).expectSubscription().expectNext(book1).expectNext(book2).verifyComplete()
         StepVerifier.create( bookService.findAll()).expectNextCount(2).verifyComplete()
     }
-
+//
 //    @Test
 //    fun `should create a book when create method is called`() {
 //

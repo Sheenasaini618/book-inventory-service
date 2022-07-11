@@ -1,7 +1,8 @@
-package com.example.demo.book
+package com.inventory.book.repository
 
+import com.example.demo.book.Book
+import com.example.demo.book.Image
 import io.kotlintest.shouldBe
-import org.bson.types.ObjectId
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -54,7 +55,7 @@ class BookRepositoryTest {
     fun `should not store duplicate application with same title`() {
 
         val book1 = Book("1","probability" , Image("https://image.png","https://image.png") , listOf("Michael"), "abcd" , 2,4)
-        val book2 = Book("1","complex Algebra" , Image("https://image.png","https://image.png"), listOf("Robert") , "abcd" , 100 , 3)
+        val book2 = Book("1","complex Algebra" , Image("https://image.png","https://image.png") , listOf("Robert") , "abcd" , 100 , 3)
 
         bookRepository.insert(book1).block()
 
