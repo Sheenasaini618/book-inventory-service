@@ -1,9 +1,7 @@
 package com.inventory.book.controller
 
 import com.example.demo.book.Book
-import com.example.demo.book.GooleBook
 import com.example.demo.book.Image
-import com.example.demo.book.Item
 import com.inventory.book.service.BookService
 import io.kotlintest.shouldBe
 import io.mockk.every
