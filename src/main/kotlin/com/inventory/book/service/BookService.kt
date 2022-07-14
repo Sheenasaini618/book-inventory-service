@@ -43,12 +43,8 @@ class BookService(@Autowired val bookRepository : BookRepository , @Autowired va
            }
     }
 
-    fun findByTitle(title : String) : Flux<Book>{
-        return bookRepository.findByTitle(title)
-    }
-
-    fun findByAuthor(author : String) : Flux<Book>{
-        return bookRepository.findByAuthors(author)
+    fun findBySearch(query : String) : Flux<Book>{
+        return bookRepository.findByTitleLikeOrAuthors(query)
     }
 
     fun remove() : Mono<Void> {

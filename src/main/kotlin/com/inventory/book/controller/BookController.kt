@@ -24,14 +24,9 @@ class BookController(@Autowired val bookService : BookService) {
         return bookService.findAll()
     }
 
-    @GetMapping("books/search/title/{title}")
-    fun getBookBasisTitle(@PathVariable title : String): Flux<Book>{
-        return bookService.findByTitle(title)
-    }
-
-    @GetMapping("books/search/author/{author}")
-    fun getBookBasisAuthor(@PathVariable author : String): Flux<Book>{
-        return bookService.findByAuthor(author)
+    @GetMapping("/books/list/{query}")
+    fun getBookBasisSearch( @PathVariable(required = true) query : String): Flux<Book>{
+        return bookService.findBySearch(query)
     }
 
     @PostMapping("/books/create")
