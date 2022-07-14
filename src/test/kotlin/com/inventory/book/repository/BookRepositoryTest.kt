@@ -30,7 +30,7 @@ class BookRepositoryTest {
 
         bookRepository.save(book).block()
 
-        val actualSaveApplication = bookRepository.findByAuthors(
+        val actualSaveApplication = bookRepository.findByTitleLikeOrAuthors(
             "Michael"
         ).blockFirst()
 
@@ -44,7 +44,7 @@ class BookRepositoryTest {
 
         bookRepository.save(book).block()
 
-        val actualSaveApplication = bookRepository.findByTitle(
+        val actualSaveApplication = bookRepository.findByTitleLikeOrAuthors(
             "probability"
         ).blockFirst()
 

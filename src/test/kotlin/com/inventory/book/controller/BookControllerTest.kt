@@ -117,11 +117,11 @@ class BookControllerTest {
         val book = Book("1","probability" , Image("https://image.png","https://image.png") , listOf("Michael"), "abcd" , 2,4)
 
         every {
-            bookService.findByTitle("probability")
+            bookService.findBySearch("probability")
         } returns Flux.just(book)
 
         val response = client.get()
-            .uri("/api/v1/books/search/title/probability")
+            .uri("/api/v1/books/list/probability")
             .exchange()
             .expectStatus().is2xxSuccessful
             .returnResult<Any>()
@@ -130,7 +130,7 @@ class BookControllerTest {
         response shouldBe exepectedResponse
 
         verify(exactly = 1) {
-            bookService.findByTitle("probability")
+            bookService.findBySearch("probability")
         }
     }
 
@@ -150,13 +150,13 @@ class BookControllerTest {
         val book1 = Book("1","probability" , Image("https://image.png","https://image.png") , listOf("Michael"), "abcd" , 2,4)
 
         every {
-           bookService.findByAuthor("Michael")
+           bookService.findBySearch("Michael")
         } returns Flux.just(
             book1
         )
 
         val response = client.get()
-            .uri("/api/v1/books/search/author/Michael")
+            .uri("/api/v1/books/list/Michael")
             .exchange()
             .expectStatus().is2xxSuccessful
             .returnResult<Any>()
@@ -165,7 +165,7 @@ class BookControllerTest {
         response.blockFirst() shouldBe expectedResult[0]
 
         verify(exactly = 1) {
-            bookService.findByAuthor("Michael")
+            bookService.findBySearch("Michael")
         }
     }
 

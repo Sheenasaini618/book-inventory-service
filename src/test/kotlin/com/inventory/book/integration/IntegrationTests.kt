@@ -75,7 +75,7 @@ class IntegrationTests {
         bookRepository.save(book).block()
 
         val response = client.get()
-            .uri("/api/v1/books/search/title/${book.title}")
+            .uri("/api/v1/books/list/${book.title}")
             .exchange()
             .expectStatus().is2xxSuccessful
             .returnResult<Any>()
@@ -100,7 +100,7 @@ class IntegrationTests {
         bookRepository.save(book).block()
 
         val response = client.get()
-            .uri("/api/v1/books/search/author/${book.authors?.get(0)}")
+            .uri("/api/v1/books/list/${book.authors?.get(0)}")
             .exchange()
             .expectStatus().is2xxSuccessful
             .returnResult<Any>()

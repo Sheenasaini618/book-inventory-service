@@ -28,11 +28,11 @@ class BookServiceTest{
         } returns Flux.just(book1,book2)
 
         every {
-            findByTitle("probability")
+            findByTitleLikeOrAuthors("probability")
         } returns Flux.just(book1)
 
         every {
-            findByAuthors("Michael")
+            findByTitleLikeOrAuthors("Michael")
         } returns Flux.just(book1)
 
     }
@@ -64,7 +64,7 @@ class BookServiceTest{
     @Test
     fun `should find the list of books on the basis of the title`() {
 
-        val result = bookService.findByTitle("probability").blockFirst()
+        val result = bookService.findBySearch("probability").blockFirst()
 
         result shouldBe book1
     }
@@ -72,7 +72,7 @@ class BookServiceTest{
     @Test
     fun `should find the list of books on the basis of the author`() {
 
-        val bookResult = bookService.findByAuthor("Michael").blockFirst()
+        val bookResult = bookService.findBySearch("Michael").blockFirst()
 
         bookResult shouldBe book1
     }
