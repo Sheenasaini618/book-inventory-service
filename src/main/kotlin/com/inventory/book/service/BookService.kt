@@ -25,7 +25,6 @@ class BookService(@Autowired val bookRepository : BookRepository , @Autowired va
 
     fun deleteBooksById(id : String) : Mono<Book>{
          return bookRepository.findById(id).flatMap { book ->
-             println(book)
              bookRepository.deleteById(id)
              .doOnSuccess{kafkaProducerService.messageOnBasisAction(book,Action.DELETED.name)}.subscribe()
              book.toMono()

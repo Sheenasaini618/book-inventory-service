@@ -4,6 +4,7 @@ import com.example.demo.book.Book
 import com.example.demo.book.Image
 import io.kotlintest.shouldBe
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,9 +19,9 @@ class BookRepositoryTest {
     @Autowired
     lateinit var bookRepository : BookRepository
 
-    @AfterEach
+    @BeforeEach
     fun tearDown() {
-        bookRepository.deleteAll().block()
+        bookRepository.deleteAll().subscribe()
     }
 
     @Test
